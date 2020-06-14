@@ -1,0 +1,46 @@
+-- Shulan Yang's script3
+
+-- Connect to the correct database
+SHOW databases;
+USE syang486assign2db IF EXIST syang486assign2db;
+
+-- Query 1
+SELECT lastname FROM patient;
+
+-- Query 2
+SELECT DISTINCT lastname FROM patient;
+
+-- Query 3
+SELECT * FROM doctor ORDER BY lastname;
+
+-- Query 4
+SELECT name, code FROM hospital WHERE numberbeds > 1500;
+
+-- Query 5
+SELECT lastname, firstname FROM doctor WHERE worksinhoscode = (SELECT code FROM hospital WHERE name = "St.Joseph");
+
+-- Query 6
+SELECT firstname, lastname FROM patient WHERE lastname LIKE "G%";
+
+-- Query 7
+SELECT firstname, lastname FROM patient JOIN treat ON patient.OHIPnumber = treat.OHIPnumber AND treat.licensenumber = (SELECT licensenumber FROM doctor WHERE lastname = "Clooney");
+
+-- Query 8
+SELECT hospital.name, hospital.city, doctor.lastname FROM hospital, doctor WHERE hospital.headdocid = doctor.licensenumber;
+
+-- Query 9
+SELECT SUM(numberbeds) AS totalnumofbeds FROM hospital;
+
+-- Query 10
+SELECT patient.firstname AS patientfn, doctor.firstname AS doctorfn FROM treat JOIN doctor ON doctor.licensenumber = treat.licensenumber JOIN patient ON patient.OHIPnumber = treat.OHIPnumber JOIN hospital ON doctor.licensenumber = hospital.headdocid;
+
+-- Query 11
+SELECT firstname, lastname FROM doctor WHERE specialty = "Surgeon" AND (worksinhoscode = "ABC" OR worksinhoscode = "DDE");
+
+-- Query 12
+SELECT firstname FROM doctor WHERE licensenumber NOT IN (SELECT licensenumber FROM treat);
+
+-- Query 13
+SELECT firstname, lastname FROM doctor LEFT JOIN treat ON treat.licensenumber = doctor.licensenumber GROUP BY lastname HAVING COUNT(treat.licensenumber) > 1;
+
+

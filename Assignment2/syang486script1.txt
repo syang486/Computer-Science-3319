@@ -1,0 +1,37 @@
+-- Shulan Yang's script1
+
+-- List all the current databases owned by you
+SHOW databases;
+
+-- Delete the database called yourwesternuseridassign2db if it exists
+DROP DATABASE IF EXISTS syang486assign2db;
+
+-- Create a database called yourwesternuseridassign2db
+CREATE DATABASE syang486assign2db;
+
+-- Connect to (use) that database
+USE syang486assign2db;
+
+GRANT USAGE ON *.* TO 'ta'@'localhost';
+DROP USER 'ta'@'localhost';
+CREATE USER 'ta'@'localhost' IDENTIFIED BY 'cs3319';
+GRANT ALL PRIVILEGES ON syang486assign2db.* TO 'ta'@'localhost';
+FLUSH PRIVILEGES;
+
+-- List all the tables
+SHOW TABLES;
+
+-- Create the tables you need to solve the problem
+CREATE TABLE patient (OHIPnumber INT NOT NULL, firstname VARCHAR(20), lastname VARCHAR(20), PRIMARY KEY (OHIPnumber));
+
+CREATE TABLE hospital (code VARCHAR(3) NOT NULL, name VARCHAR(20), city VARCHAR(20), province VARCHAR(2), numberbeds INT, headdate DATE, headdocid VARCHAR(4), PRIMARY KEY (code));
+
+CREATE TABLE doctor (firstname VARCHAR(20), lastname VARCHAR(20), licensenumber VARCHAR(4) NOT NULL, licenseddate DATE, specialty VARCHAR(30), worksinhoscode VARCHAR(3), PRIMARY KEY (licensenumber));
+
+CREATE TABLE treat (OHIPnumber INT NOT NULL, licensenumber VARCHAR(4) NOT NULL, PRIMARY KEY (OHIPnumber, licensenumber), FOREIGN KEY (OHIPnumber) REFERENCES patient(OHIPnumber) ON DELETE CASCADE, FOREIGN KEY(licensenumber) REFERENCES doctor (licensenumber) ON DELETE CASCADE);
+
+-- add forign key headdocid to the table hospital
+ALTER TABLE hospital ADD FOREIGN KEY (headdocid) REFERENCES doctor (licensenumber) ON DELETE CASCADE;
+ALTER TABLE doctor ADD FOREIGN KEY (worksinhoscode) REFERENCES hospital(code) ON DELETE CASCADE;
+-- List the tables again
+SHOW TABLES;

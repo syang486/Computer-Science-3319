@@ -1,0 +1,194 @@
+Warning: Using a password on the command line interface can be insecure.
+--------------
+SHOW databases
+--------------
+
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| syang486assign2db  |
+| vetoffice          |
++--------------------+
+5 rows in set (0.00 sec)
+
+--------------
+SELECT lastname FROM patient
+--------------
+
++----------+
+| lastname |
++----------+
+| Gellar   |
+| Brown    |
+| Green    |
+| Yang     |
+| Gellar   |
+| Gellar   |
+| Bing     |
++----------+
+7 rows in set (0.00 sec)
+
+--------------
+SELECT DISTINCT lastname FROM patient
+--------------
+
++----------+
+| lastname |
++----------+
+| Gellar   |
+| Brown    |
+| Green    |
+| Yang     |
+| Bing     |
++----------+
+5 rows in set (0.00 sec)
+
+--------------
+SELECT * FROM doctor ORDER BY lastname
+--------------
+
++-----------+------------+---------------+--------------+--------------+----------------+
+| firstname | lastname   | licensenumber | licenseddate | specialty    | worksinhoscode |
++-----------+------------+---------------+--------------+--------------+----------------+
+| Colleen   | Aziz       | SE66          | 1989-08-24   | Surgeon      | ABC            |
+| Henry     | Bethune    | HB23          | 1997-01-01   | Surgeon      | ABC            |
+| Ross      | Clooney    | HT45          | 1987-06-20   | Surgeon      | DDE            |
+| Bernie    | Kavorikian | RD34          | 1980-09-09   | Urologist    | BBC            |
+| Joey      | Shabado    | GD56          | 1960-06-24   | Podiatrist   | BBC            |
+| Ben       | Spock      | YT67          | 1955-02-20   | Pediatrician | DDE            |
+| Mandy     | Webster    | JK78          | 1990-08-08   | Surgeon      | BBC            |
++-----------+------------+---------------+--------------+--------------+----------------+
+7 rows in set (0.00 sec)
+
+--------------
+SELECT name, code FROM hospital WHERE numberbeds > 1500
+--------------
+
++----------+------+
+| name     | code |
++----------+------+
+| Victoria | ABC  |
++----------+------+
+1 row in set (0.00 sec)
+
+--------------
+SELECT lastname, firstname FROM doctor WHERE worksinhoscode = (SELECT code FROM hospital WHERE name = "St.Joseph")
+--------------
+
++------------+-----------+
+| lastname   | firstname |
++------------+-----------+
+| Shabado    | Joey      |
+| Webster    | Mandy     |
+| Kavorikian | Bernie    |
++------------+-----------+
+3 rows in set (0.00 sec)
+
+--------------
+SELECT firstname, lastname FROM patient WHERE lastname LIKE "G%"
+--------------
+
++-----------+----------+
+| firstname | lastname |
++-----------+----------+
+| Bill      | Gellar   |
+| Jon       | Green    |
+| Colleen   | Gellar   |
+| Sean      | Gellar   |
++-----------+----------+
+4 rows in set (0.00 sec)
+
+--------------
+SELECT firstname, lastname FROM patient JOIN treat ON patient.OHIPnumber = treat.OHIPnumber AND treat.licensenumber = (SELECT licensenumber FROM doctor WHERE lastname = "Clooney")
+--------------
+
++-----------+----------+
+| firstname | lastname |
++-----------+----------+
+| Suzi      | Brown    |
+| Jon       | Green    |
+| Sean      | Gellar   |
+| Scotty    | Bing     |
++-----------+----------+
+4 rows in set (0.00 sec)
+
+--------------
+SELECT hospital.name, hospital.city, doctor.lastname FROM hospital, doctor WHERE hospital.headdocid = doctor.licensenumber
+--------------
+
++-----------+----------+----------+
+| name      | city     | lastname |
++-----------+----------+----------+
+| Victoria  | London   | Aziz     |
+| St.Joseph | London   | Shabado  |
+| Victoria  | Victoria | Spock    |
++-----------+----------+----------+
+3 rows in set (0.00 sec)
+
+--------------
+SELECT SUM(numberbeds) AS totalnumofbeds FROM hospital
+--------------
+
++----------------+
+| totalnumofbeds |
++----------------+
+|           3800 |
++----------------+
+1 row in set (0.00 sec)
+
+--------------
+SELECT patient.firstname AS patientfn, doctor.firstname AS doctorfn FROM treat JOIN doctor ON doctor.licensenumber = treat.licensenumber JOIN patient ON patient.OHIPnumber = treat.OHIPnumber JOIN hospital ON doctor.licensenumber = hospital.headdocid
+--------------
+
++-----------+----------+
+| patientfn | doctorfn |
++-----------+----------+
+| Bill      | Joey     |
+| Colleen   | Joey     |
+| Scotty    | Joey     |
+| Jon       | Colleen  |
++-----------+----------+
+4 rows in set (0.01 sec)
+
+--------------
+SELECT firstname, lastname FROM doctor WHERE specialty = "Surgeon" AND (worksinhoscode = "ABC" OR worksinhoscode = "DDE")
+--------------
+
++-----------+----------+
+| firstname | lastname |
++-----------+----------+
+| Henry     | Bethune  |
+| Ross      | Clooney  |
+| Colleen   | Aziz     |
++-----------+----------+
+3 rows in set (0.00 sec)
+
+--------------
+SELECT firstname FROM doctor WHERE licensenumber NOT IN (SELECT licensenumber FROM treat)
+--------------
+
++-----------+
+| firstname |
++-----------+
+| Bernie    |
+| Ben       |
++-----------+
+2 rows in set (0.00 sec)
+
+--------------
+SELECT firstname, lastname FROM doctor LEFT JOIN treat ON treat.licensenumber = doctor.licensenumber GROUP BY lastname HAVING COUNT(treat.licensenumber) > 1
+--------------
+
++-----------+----------+
+| firstname | lastname |
++-----------+----------+
+| Ross      | Clooney  |
+| Joey      | Shabado  |
+| Mandy     | Webster  |
++-----------+----------+
+3 rows in set (0.00 sec)
+
+Bye

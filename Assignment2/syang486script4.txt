@@ -1,0 +1,54 @@
+-- Shulan Yang's script4
+
+-- Connect to the correct database
+SHOW databases;
+USE syang486assign2db IF EXIST syang486assign2db;
+
+-- Show the table doctor
+SELECT * FROM doctor;
+
+-- Delete any doctor who got his/her license before Jan 1, 1965
+DELETE FROM doctor WHERE licenseddate < "1965-01-01";
+
+
+-- @the delete command did not delete the rows because the doctor who got his/her license before Jan 1, 1965, is the head doctor of a hospital and there is not "ON DELETE CASCADE" command to the foreign key on the creation of table hospital. When deleting the data in table doctor, the database will not help us to delete the data of headdocid attribute in table hospital, and we need to delete them ourselves. Since the headdocid attribute in table hospital is still a foreign key referenced to the licensenumber attribute in table doctor and we forget to delete the data of headdocid attribute in table hospital before deleting data in table doctor, the database will cause foreign key constraint error.  
+
+
+SELECT * FROM doctor;
+SELECT * FROM hospital;
+SELECT * FROM patient;
+SELECT * FROM treat;
+
+-- Create a view that shows the all the patients first names and last names who are treated by the heads of hospitals, that made heads after Dec 31, 1995
+CREATE VIEW Patients_Treated_By_Heads AS SELECT patient.firstname AS patientfn, patient.lastname AS patientln, doctor.lastname AS doctoln, hospital.name AS hosname FROM patient, doctor, hospital, treat WHERE doctor.licensenumber = treat.licensenumber AND patient.OHIPnumber = treat.OHIPnumber AND doctor.licensenumber = hospital.headdocid AND hospital.headdate > "1995-12-31";
+
+-- Prove that your view works by selecting all the rows from it
+SELECT * FROM Patients_Treated_By_Heads;
+
+-- Show all the data in the doctor table and show all the data in the treats table
+SELECT * FROM doctor;
+SELECT * FROM treat;
+
+-- Delete the doctor with a last name of Clooney
+DELETE FROM doctor WHERE lastname = "Clooney";
+
+
+-- @the delete command deleted the rows because the doctor whose lastname is Clooney is not the head doctor of any hospital and there is "ON DELETE CASCADE" command to the foreign key on the creation of table treat. When deleting the data in table doctor, the database will help us to delete the data of licensenumber attribute in table treat since licensenumber attribute in table doctor is a foreign key of table treat. 
+
+
+-- Prove that the delete worked by showing the doctors table again
+SELECT * FROM doctor;
+
+-- Show the doctors table again
+SELECT * FROM doctor;
+
+-- Then try to delete all the Surgeons
+DELETE FROM doctor WHERE specialty = "Surgeon";
+
+
+-- @the delete command did not delete the rows because the doctor whose specialty is Surgeon, is the head doctor of a hospital and there is not "ON DELETE CASCADE" command to the foreign key on the creation of table hospital. When deleting the data in table doctor, the database will not help us to delete the data of headdocid attribute in table hospital, and we need to delete them ourselves. Since the headdocid attribute in table hospital is still a foreign key referenced to the licensenumber attribute in table doctor and we forget to delete the data of headdocid attribute in table hospital before deleting data in table doctor, the database will cause foreign key constraint error.  
+
+
+-- Prove that the delete worked by showing the doctors table again
+SELECT * FROM doctor;
+

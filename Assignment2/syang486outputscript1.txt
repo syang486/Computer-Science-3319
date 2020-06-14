@@ -1,0 +1,109 @@
+Warning: Using a password on the command line interface can be insecure.
+--------------
+SHOW databases
+--------------
+
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| vetoffice          |
++--------------------+
+4 rows in set (0.00 sec)
+
+--------------
+DROP DATABASE IF EXISTS syang486assign2db
+--------------
+
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+--------------
+CREATE DATABASE syang486assign2db
+--------------
+
+Query OK, 1 row affected (0.00 sec)
+
+--------------
+GRANT USAGE ON *.* TO 'ta'@'localhost'
+--------------
+
+Query OK, 0 rows affected (0.00 sec)
+
+--------------
+DROP USER 'ta'@'localhost'
+--------------
+
+Query OK, 0 rows affected (0.00 sec)
+
+--------------
+CREATE USER 'ta'@'localhost' IDENTIFIED BY 'cs3319'
+--------------
+
+Query OK, 0 rows affected (0.00 sec)
+
+--------------
+GRANT ALL PRIVILEGES ON syang486assign2db.* TO 'ta'@'localhost'
+--------------
+
+Query OK, 0 rows affected (0.01 sec)
+
+--------------
+FLUSH PRIVILEGES
+--------------
+
+Query OK, 0 rows affected (0.00 sec)
+
+--------------
+SHOW TABLES
+--------------
+
+Empty set (0.00 sec)
+
+--------------
+CREATE TABLE patient (OHIPnumber INT NOT NULL, firstname VARCHAR(20), lastname VARCHAR(20), PRIMARY KEY (OHIPnumber))
+--------------
+
+Query OK, 0 rows affected (0.28 sec)
+
+--------------
+CREATE TABLE hospital (code VARCHAR(3) NOT NULL, name VARCHAR(20), city VARCHAR(20), province VARCHAR(2), numberbeds INT, headdate DATE, headdocid VARCHAR(4), PRIMARY KEY (code))
+--------------
+
+Query OK, 0 rows affected (0.40 sec)
+
+--------------
+CREATE TABLE doctor (firstname VARCHAR(20), lastname VARCHAR(20), licensenumber VARCHAR(4) NOT NULL, licenseddate DATE, specialty VARCHAR(30), worksinhoscode VARCHAR(3), PRIMARY KEY (licensenumber), FOREIGN KEY (worksinhoscode) REFERENCES hospital(code))
+--------------
+
+Query OK, 0 rows affected (0.07 sec)
+
+--------------
+CREATE TABLE treat (OHIPnumber INT NOT NULL, licensenumber VARCHAR(4) NOT NULL, PRIMARY KEY (OHIPnumber, licensenumber), FOREIGN KEY (OHIPnumber) REFERENCES patient(OHIPnumber) ON DELETE CASCADE, FOREIGN KEY(licensenumber) REFERENCES doctor (licensenumber) ON DELETE CASCADE)
+--------------
+
+Query OK, 0 rows affected (0.06 sec)
+
+--------------
+ALTER TABLE hospital ADD FOREIGN KEY (headdocid) REFERENCES doctor (licensenumber)
+--------------
+
+Query OK, 0 rows affected (0.12 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+--------------
+SHOW TABLES
+--------------
+
++-----------------------------+
+| Tables_in_syang486assign2db |
++-----------------------------+
+| doctor                      |
+| hospital                    |
+| patient                     |
+| treat                       |
++-----------------------------+
+4 rows in set (0.00 sec)
+
+Bye
